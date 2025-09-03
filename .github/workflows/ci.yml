@@ -1,0 +1,57 @@
+name: CI - Task Manager
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  backend:
+    name: Build & Test Backend (Spring Boot)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: |
+          cd taskmanager3
+          ./mvnw clean install || mvn clean install  # selon ton setup
+
+  frontend:
+    name: Lint & Build Frontend (Angular)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd taskmanager-frontend
+          npm install
+
+      - name: Lint code
+        run: |
+          cd taskmanager-frontend
+          npm run lint || echo "Lint warnings"
+
+      - name: Build Angular app
+        run: |
+          cd taskmanager-frontend
+          npm run build
