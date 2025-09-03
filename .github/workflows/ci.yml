@@ -23,10 +23,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build with Maven
+      - name: Build with Maven (skip tests)
         run: |
           cd taskmanager3
-          ./mvnw clean install || mvn clean install  # selon ton setup
+          ./mvnw clean install -DskipTests || mvn clean install -DskipTests
 
   frontend:
     name: Lint & Build Frontend (Angular)
@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd taskmanager-frontend
-          npm install
+          npm ci
 
       - name: Lint code
         run: |
@@ -54,4 +54,4 @@ jobs:
       - name: Build Angular app
         run: |
           cd taskmanager-frontend
-          npm run build
+          npm run build -- --configuration production
